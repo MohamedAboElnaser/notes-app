@@ -20,7 +20,7 @@ model User {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   notes     Note[]
-
+  verification  verification?
   @@map("users")
 }
 
@@ -35,4 +35,11 @@ model Note {
   updatedAt DateTime @default(now())
 
   @@map("notes")
+}
+
+model verification{
+  id     Int      @id @default(autoincrement()) @unique
+  user   User     @relation(fields: [userId],references: [userId])
+  userId  Int     @unique
+  otp     String  @unique     
 }
