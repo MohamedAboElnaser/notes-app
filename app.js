@@ -1,10 +1,13 @@
 const express = require("express");
+const morgan=require('morgan')
+
+const authRouter=require('./routes/auth.router');
 
 const app = express();
 
-app.get("/", (req, res) => {
-    res.json({
-        message: "Welcome to notes-app",
-    });
-});
+//pre-middlewares
+app.use(morgan('dev'));
+
+
+app.use('/api/v1/auth',authRouter);
 module.exports = app;
