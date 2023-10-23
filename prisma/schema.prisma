@@ -13,10 +13,10 @@ datasource db {
 model User {
   userId    Int      @id @default(autoincrement())
   id        String   @unique @default(uuid())
-  name      String?
-  email     String?
-  password  String?
-  imagePath String   @default("avatar.png")
+  name      String
+  email     String  @unique
+  password  String
+  imagePath String?   @default("avatar.png")
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   notes     Note[]
@@ -25,14 +25,14 @@ model User {
 }
 
 model Note {
-  author    User     @relation(fields: [authorId], references: [userId])
+  author    User     @relation(fields: [authorId], references: [userId], onDelete: Cascade)
   authorId  Int
   noteId    Int      @id @default(autoincrement())
   id        String   @unique @default(uuid())
   title     String
   body      String
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @default(now())
 
   @@map("notes")
 }
