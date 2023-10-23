@@ -9,3 +9,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  userId    Int      @id @default(autoincrement())
+  id        String   @unique @default(uuid())
+  name      String?
+  email     String?
+  password  String?
+  imagePath String   @default("avatar.png")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  notes     Note[]
+
+  @@map("users")
+}
+
+model Note {
+  author    User     @relation(fields: [authorId], references: [userId])
+  authorId  Int
+  noteId    Int      @id @default(autoincrement())
+  id        String   @unique @default(uuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
