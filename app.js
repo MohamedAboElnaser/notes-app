@@ -1,0 +1,10 @@
+const express = require("express");
+
+const app = express();
+
+app.get("/", (req, res) => {
+    res.json({
+        message: "Welcome to notes-app",
+    });
+});
+module.exports = app;
