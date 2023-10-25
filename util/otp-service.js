@@ -44,4 +44,4 @@ class OTPService {
     }
 }
 
-module.exports = { OTPService };
+module.exports = OTPService;
