@@ -68,7 +68,7 @@ const signUp = async (name, email, password) => {
         /**
          * Remove the user record from the db
          * Remove the verification record from the db
-         * Throw the error to be handel in the controller
+         * Throw the error to be  in the controller
          */
         await db.user.delete({
             where: {
