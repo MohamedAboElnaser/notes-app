@@ -11,6 +11,17 @@ const signup = catchAsync(async (req, res, next) => {
     });
 });
 
+const verifyEmail = catchAsync(async (req, res) => {
+    const { otp } = req.body;
+    await authService.verifyEmail(otp);
+
+    return res.status(200).json({
+        status: "success",
+        message: "Your email verified successfully, you can login now.",
+    });
+});
+
 module.exports = {
     signup,
+    verifyEmail,
 };

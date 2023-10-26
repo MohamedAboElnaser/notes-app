@@ -1,3 +1,4 @@
 node_modules
 .env
 testing-orm.js
+*.rest

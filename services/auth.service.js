@@ -85,7 +85,54 @@ const signUp = async (name, email, password) => {
     }
 };
 
+const verifyEmail = async (otp) => {
+    /**
+     * Fetch  verification record using hashedOtp
+     * Throw an error if there is no record
+     * Verify the user record using userId returned from verification Record
+     * delete verification record
+     */
+
+    const hashedOtp = OTPService.hash(otp);
+    try {
+        //Fetch otp record from verification table
+        const verificationRecord = await db.verification.findUnique({
+            where: {
+                otp: hashedOtp,
+            },
+        });
+
+        if (!verificationRecord)
+            throw new AppError("Invalid OTP , Please try again", 404);
+
+        //verify the user record
+        const user = await db.user.update({
+            where: {
+                userId: verificationRecord.userId,
+            },
+            data: {
+                isActive: true,
+            },
+        });
+
+        if (!user)
+            throw new AppError(
+                "Error happen while verifying  user's email ,please try again",
+                500
+            );
+        //delete otp record related to the user
+        await db.verification.delete({
+            where: {
+                otp: hashedOtp,
+            },
+        });
+    } catch (err) {
+        throw err;
+    }
+};
+
 
 module.exports = {
     signUp,
+    verifyEmail,
 };
