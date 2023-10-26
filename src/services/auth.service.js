@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { AppError, OTPService, JWTService } = require("../util");
-const { db } = require("../config");
+const { db } = require("../../config");
 
 const signUp = async (name, email, password) => {
     let hashedOtp;
@@ -171,5 +171,5 @@ const login = async (email, password) => {
 module.exports = {
     signUp,
     verifyEmail,
-    login
+    login,
 };
