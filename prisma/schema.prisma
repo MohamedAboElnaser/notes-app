@@ -11,16 +11,17 @@ datasource db {
 }
 
 model User {
-  userId    Int      @id @default(autoincrement())
-  id        String   @unique @default(uuid())
-  name      String
-  email     String  @unique
-  password  String
-  imagePath String?   @default("avatar.png")
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  notes     Note[]
-  verification  verification?
+  userId       Int           @id @default(autoincrement())
+  id           String        @unique @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  imagePath    String?       @default("avatar.png")
+  isActive     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  notes        Note[]
+  verification verification?
+
   @@map("users")
 }
 
@@ -37,9 +38,11 @@ model Note {
   @@map("notes")
 }
 
-model verification{
-  id     Int      @id @default(autoincrement()) @unique
-  user   User     @relation(fields: [userId],references: [userId])
-  userId  Int     @unique
-  otp     String  @unique     
+model verification {
+  id     Int    @id @unique @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [userId])
+  userId Int    @unique
+  otp    String @unique
+
+  @@map("verifications")
 }

@@ -3,8 +3,9 @@ const { AppError, OTPService } = require("../util");
 const { db } = require("../config");
 
 const signUp = async (name, email, password) => {
+    let hashedOtp;
     /**
-     * validate that field exists
+     * validate that field existence
      * check if that email is already register or not if it register throw error
      * hash the password to save to db
      * create user record at db
@@ -41,9 +42,9 @@ const signUp = async (name, email, password) => {
                 500
             );
 
-        //generate otp
+        //generate otp of 6 digits
         const otp = OTPService.generate(6);
-        const hashedOtp = OTPService.hash(otp);
+        hashedOtp = OTPService.hash(otp);
 
         //create verification record at the db
         const verificationRecord = await db.verification.create({
