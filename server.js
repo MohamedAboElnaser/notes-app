@@ -6,5 +6,9 @@ const port = 3000 || process.env.PORT;
 
 const server = http.createServer(app);
 server.listen(port, () => {
-    console.log(`Server running at port ${port}...`);
+    console.log(
+        `Server running at ${process.env.NODE_ENV} environment at port ${port}...`
+    );
 });
+
+module.exports = server;
