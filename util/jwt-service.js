@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { AppError } = require("./");
+const  AppError  = require("./AppError");
 
 /**
  * @class JWTService
