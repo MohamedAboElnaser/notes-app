@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       Int           @id @default(autoincrement())
+  id           String        @unique @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  imagePath    String?       @default("avatar.png")
+  isActive     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  notes        Note[]
+  verification verification?
+
+  @@map("users")
+}
+
+model Note {
+  author    User     @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  authorId  Int
+  noteId    Int      @id @default(autoincrement())
+  id        String   @unique @default(uuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("notes")
+}
+
+model verification {
+  id     Int    @id @unique @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [userId])
+  userId Int    @unique
+  otp    String @unique
+
+  @@map("verifications")
+}
