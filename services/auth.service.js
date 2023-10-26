@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { AppError, OTPService } = require("../util");
+const { AppError, OTPService, JWTService } = require("../util");
 const { db } = require("../config");
 
 const signUp = async (name, email, password) => {
@@ -131,8 +131,45 @@ const verifyEmail = async (otp) => {
     }
 };
 
+const login = async (email, password) => {
+    /**
+     * Fetch user record using email
+     * Throw error if not exist
+     * Make sure that the user's mail is activated else throw error
+     * validate the password and throw error if there an error
+     * generate jwt with id [uuid] as the payload
+     * return return jwt
+     */
+    try {
+        const user = await db.user.findFirst({
+            where: {
+                email,
+            },
+            select: {
+                id: true,
+                isActive: true,
+                password: true,
+            },
+        });
+
+        if (!user)
+            throw new AppError("This email is not attached to any user.", 404);
+
+        if (!user.isActive)
+            throw new AppError("You should activate your mail first.", 400);
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) throw new AppError("Invalid Password", 401);
+
+        const jwt = await JWTService.generate(user.id);
+        return jwt;
+    } catch (err) {
+        throw err;
+    }
+};
 
 module.exports = {
     signUp,
     verifyEmail,
+    login
 };
