@@ -42,8 +42,23 @@ const getNote = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+const updateNote = catchAsync(async (req, res, next) => {
+  // TODO  validate request body
+  const { userId } = req.user;
+  const { noteId } = req.params;
+  const updatedNote = await notesService.updateNote(noteId, userId, req.body);
+  return res.status(200).json({
+    status: 'success',
+    message: 'Note updated successfully',
+    data: {
+      updatedNote,
+    },
+  });
+});
 module.exports = {
   createNote,
   getNotes,
   getNote,
+  updateNote,
 };
