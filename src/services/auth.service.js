@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { AppError, OTPService, JWTService } = require("../util");
-const { db } = require("../config");
+const { db } = require("../../config");
 
 const signUp = async (name, email, password) => {
     let hashedOtp;
@@ -64,6 +64,8 @@ const signUp = async (name, email, password) => {
         //TODO i will use events to send email by implement this in subscribers directory
         // now i just log the otp to verify the account
         console.log("The generated otp is: ", otp);
+        // for testing purposes
+        return otp;
     } catch (err) {
         //Rollback
         /**
@@ -168,8 +170,9 @@ const login = async (email, password) => {
     }
 };
 
+
 module.exports = {
     signUp,
     verifyEmail,
-    login
+    login,
 };

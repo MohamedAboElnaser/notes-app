@@ -5,10 +5,8 @@
  * @returns {Function} A middleware function that handles errors and passes them to the next middleware.
  */
 function catchAsync(fn) {
-    return function (req, res, next) {
-      fn(req, res, next).catch(next);
-    };
-  }
-module.exports={
-    catchAsync
+  return function (req, res, next) {
+    fn(req, res, next).catch(next);
+  };
 }
+module.exports = catchAsync;
