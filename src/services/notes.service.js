@@ -19,6 +19,24 @@ const createNote = async (authorId, noteBody, noteTitle) => {
   return newNote;
 };
 
+const getAllNotes = async (authorId) => {
+  const notes = await db.note.findMany({
+    where: {
+      authorId,
+    },
+    select: {
+      noteId: false,
+      id: true,
+      authorId: true,
+      title: true,
+      body: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  return notes;
+};
 module.exports = {
   createNote,
+  getAllNotes,
 };
