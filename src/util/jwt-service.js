@@ -11,9 +11,8 @@ class JWTService {
    */
   static async generate(id) {
     const jwtToken = jwt.sign({ id }, process.env.JWT_SECRET, {
-      expiresIn: new Date(
-        Date.now() + Number(process.env.JWT_EXPIRE_IN) * 24 * 60 * 60 * 1000,
-      ).getMilliseconds(),
+      expiresIn:
+        (Date.now() + Number(process.env.JWT_EXPIRE_IN) * 24 * 60 * 60 * 1000),
     });
 
     return jwtToken;
