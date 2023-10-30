@@ -25,7 +25,7 @@ const protect = catchAsync(async (req, res, next) => {
     );
 
   // verify token
-  const decodedToken = JWTService.decode(token);
+  const decodedToken = await JWTService.decode(token);
 
   // check the existence of the user
   const currentUser = await db.user.findUnique({
