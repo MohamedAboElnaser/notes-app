@@ -5,6 +5,6 @@ const  protect   = require('../middlewares/protectMIddleware');
 notesRouter
   .route('/')
   .post(protect, notesController.createNote)
-  .get(notesController.getNotes);
+  .get(protect,notesController.getNotes);
 
 module.exports = notesRouter;

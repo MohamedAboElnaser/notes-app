@@ -15,7 +15,18 @@ const createNote = catchAsync(async (req, res, next) => {
   });
 });
 
-const getNotes = catchAsync(async (req, res, next) => {});
+const getNotes = catchAsync(async (req, res, next) => {
+  const { userId } = req.user;
+  const notes = await notesService.getAllNotes(userId);
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'Notes returned successfully',
+    data: {
+      notes,
+    },
+  });
+});
 
 module.exports = {
   createNote,
