@@ -36,7 +36,21 @@ const getAllNotes = async (authorId) => {
   });
   return notes;
 };
+
+const getNote = async (id, authorId) => {
+  const note = await db.note.findUnique({
+    where: {
+      id,
+      authorId,
+    },
+  });
+  console.log(note);
+  if (!note) throw new AppError('Not Found.', 404);
+  return note;
+};
+
 module.exports = {
   createNote,
   getAllNotes,
+  getNote,
 };

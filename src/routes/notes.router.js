@@ -7,4 +7,5 @@ notesRouter
   .post(protect, notesController.createNote)
   .get(protect,notesController.getNotes);
 
+notesRouter.route('/:noteId').get(protect,notesController.getNote);
 module.exports = notesRouter;
