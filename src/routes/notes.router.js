@@ -1,7 +1,10 @@
 const notesRouter = require('express').Router();
 const notesController = require('../controllers/notes.controller');
+const  protect   = require('../middlewares/protectMIddleware');
 
 notesRouter
   .route('/')
-  .post(notesController.createNote)
+  .post(protect, notesController.createNote)
   .get(notesController.getNotes);
+
+module.exports = notesRouter;
