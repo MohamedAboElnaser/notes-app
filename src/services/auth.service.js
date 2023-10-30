@@ -64,6 +64,8 @@ const signUp = async (name, email, password) => {
         //TODO i will use events to send email by implement this in subscribers directory
         // now i just log the otp to verify the account
         console.log("The generated otp is: ", otp);
+        // for testing purposes
+        return otp;
     } catch (err) {
         //Rollback
         /**
@@ -167,6 +169,7 @@ const login = async (email, password) => {
         throw err;
     }
 };
+
 
 module.exports = {
     signUp,
