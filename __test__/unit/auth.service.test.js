@@ -1,14 +1,28 @@
+let { db } = require('../../config');
 const AuthService = require('../../src/services/auth.service');
 const bcrypt = require('bcrypt');
 const { AppError, OTPService, JWTService } = require('../../src/util');
-let { db } = require('../../config');
 
-//mock bcrypt module
-jest.mock('bcrypt', () => ({
-  hash: jest.fn().mockImplementation((pass) => pass),
-  compare: jest.fn().mockImplementation((a, b) => a === b),
+//mock DB exposed from config.
+jest.mock('../../config', () => ({
+  db: {
+    user: {
+      findUnique: jest.fn(),
+      create: jest.fn(),
+      delete: jest.fn(),
+    },
+    verification: {
+      create: jest.fn(),
+      delete: jest.fn(),
+    },
+  },
 }));
 
+//mock bcrypt
+jest.mock('bcrypt', () => ({
+  hash: jest.fn(),
+  compare: jest.fn().mockImplementation((a, b) => a === b),
+}));
 //mock JWTService
 jest.mock('../../src/util/jwt-service', () => ({
   generate: jest.fn().mockReturnValue('jwt'),
@@ -20,25 +34,11 @@ jest.mock('../../src/util/otp-service', () => ({
   hash: jest.fn().mockReturnValue('password'),
 }));
 
+describe('Test auth.service module  Unit-Testing', () => {
 
-
-describe('Test auth.service module  unit-test', () => {
-    //mock db
-beforeEach(() => {
-  db = {
-    user: {
-      findUnique: jest.fn(),
-      create: jest.fn(),
-    },
-    verification: {
-      create: jest.fn(),
-    },
-  };
-});
-
-afterEach(() => {
-  jest.clearAllMocks();
-});
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   describe('Test signUp ', () => {
     it('should throw an error if any field is missing', async () => {
       await expect(AuthService.signUp()).rejects.toThrow(
@@ -56,7 +56,12 @@ afterEach(() => {
     });
     it('should throw an error if an error happen while creating user record ', async () => {
       db.user.findUnique.mockResolvedValue(false);
-      db.user.create.mockResolvedValue(null);
+      db.user.create.mockRejectedValue(
+        new AppError(
+          'Error happen while creating the user account,please try again',
+          500,
+        ),
+      );
       await expect(
         AuthService.signUp('user', 'user@exmple.com', 'pass'),
       ).rejects.toThrow(
@@ -64,8 +69,11 @@ afterEach(() => {
       );
     });
     it('Should register a user', async () => {
+      db.user.findUnique.mockReturnValue(null);
+      db.verification.create.mockResolvedValue({otp:'123456'});
+      db.user.create.mockResolvedValue({ user: 'userName' });
       await expect(
-        AuthService.signUp('ali', 'ali@gmail.com', 'password'),
+        AuthService.signUp('user', 'user@gmail.com', 'password'),
       ).resolves.not.toThrow();
     });
   });
