@@ -2,10 +2,10 @@ const { db } = require('../../config');
 const { AppError } = require('../util');
 
 const createNote = async (authorId, noteBody, noteTitle) => {
-  if ((!authorId, !noteBody || !noteTitle))
+  if (!authorId || !noteBody || !noteTitle)
     throw new AppError('Missing required fields', 500);
 
-  const newNote = db.note.create({
+  const newNote = await db.note.create({
     data: {
       body: noteBody,
       title: noteTitle,
