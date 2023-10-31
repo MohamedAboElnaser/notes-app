@@ -63,7 +63,8 @@ const updateNote = async (noteId, authorId, data) => {
     if (!note) throw new AppError('Note not Found', 404);
 
     //check that current user has access to the note
-    if (note.authorId !== authorId) throw new AppError('Not Authorized!', 401);
+    if (note.authorId !== authorId)
+      throw new AppError('You have no permission to do this action.', 403);
 
     //update the note
     const updatedNote = await db.note.update({
@@ -83,9 +84,42 @@ const updateNote = async (noteId, authorId, data) => {
   }
 };
 
+const deleteNote = async (noteId, authorId) => {
+  try {
+    //fetch note by noteId [uuid]
+    const note = await db.note.findUnique({
+      where: {
+        id: noteId,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+    if (!note) throw new AppError('Note not Found', 404);
+
+    //check that current user has access to the note
+    if (note.authorId !== authorId)
+      throw new AppError('You have no permission to do this action', 403);
+
+    //delete note
+    const deletedNote = await db.note.delete({
+      where: {
+        id: noteId,
+      },
+    });
+    if (!deletedNote)
+      throw new AppError(
+        'Error happen while deleting the note, please try again.',
+        500,
+      );
+  } catch (err) {
+    throw err;
+  }
+};
 module.exports = {
   createNote,
   getAllNotes,
   getNote,
   updateNote,
+  deleteNote,
 };
