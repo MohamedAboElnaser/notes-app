@@ -55,17 +55,23 @@ describe('Test auth.service module  Unit-Testing', () => {
       );
     });
     it('should throw an error if an error happen while creating user record ', async () => {
-      db.user.findUnique.mockResolvedValue(false);
-      db.user.create.mockRejectedValue(
-        new AppError(
-          'Error happen while creating the user account,please try again',
-          500,
-        ),
-      );
+      db.user.findUnique.mockReturnValue(null);
+      db.user.create.mockReturnValue(null);
       await expect(
         AuthService.signUp('user', 'user@exmple.com', 'pass'),
       ).rejects.toThrow(
         'Error happen while creating the user account,please try again',
+      );
+    });
+
+    it('Should throw an error if any error happen while creating verification record', async () => {
+      db.user.findUnique.mockReturnValue(null);
+      db.verification.create.mockReturnValue(null);
+      db.user.create.mockReturnValue({ otp: '123455' });
+      await expect(
+        AuthService.signUp('user', 'user@gmail.com', 'password'),
+      ).rejects.toThrow(
+        'Error happen while creating otp record, please try again',
       );
     });
     it('Should register a user', async () => {
@@ -75,6 +81,9 @@ describe('Test auth.service module  Unit-Testing', () => {
       await expect(
         AuthService.signUp('user', 'user@gmail.com', 'password'),
       ).resolves.not.toThrow();
+      expect(bcrypt.hash).toBeCalled();
+      expect(OTPService.generate).toBeCalled();
+      expect(OTPService.hash).toBeCalledTimes(1);
     });
   });
 
@@ -144,12 +153,12 @@ describe('Test auth.service module  Unit-Testing', () => {
     });
 
     //happy-scenario
-    it('Should verify the user\'s Email',async()=>{
+    it("Should verify the user's Email", async () => {
       db.verification.findUnique.mockReturnValue({ email: 'email@gmail.com' });
-      db.user.update.mockReturnValue({email:'email@gmail.com'});
+      db.user.update.mockReturnValue({ email: 'email@gmail.com' });
       await expect(AuthService.verifyEmail('12345')).resolves.not.toThrow();
       expect(OTPService.hash).toBeCalled();
       expect(db.verification.delete).toHaveBeenCalled();
-    })
+    });
   });
 });
