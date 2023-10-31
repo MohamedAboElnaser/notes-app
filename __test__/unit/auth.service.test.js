@@ -11,10 +11,12 @@ jest.mock('../../config', () => ({
       create: jest.fn(),
       delete: jest.fn(),
       findFirst: jest.fn(),
+      update: jest.fn(),
     },
     verification: {
       create: jest.fn(),
       delete: jest.fn(),
+      findUnique: jest.fn(),
     },
   },
 }));
@@ -117,7 +119,37 @@ describe('Test auth.service module  Unit-Testing', () => {
       );
       expect(returnedValue).toBe('jwt');
       expect(JWTService.generate).toBeCalledTimes(1);
-      expect(bcrypt.compare).toBeCalledWith('password','password');
+      expect(bcrypt.compare).toBeCalledWith('password', 'password');
     });
+  });
+
+  describe('VerifyEmail', () => {
+    it('Should throw error if The otp is missed', async () => {
+      await expect(AuthService.verifyEmail()).rejects.toThrow(AppError);
+    });
+    it('Should throw error if the otp is not related to any email record', async () => {
+      db.verification.findUnique.mockReturnValue(null);
+      await expect(AuthService.verifyEmail('123456')).rejects.toThrow(
+        'Invalid OTP , Please try again',
+      );
+      expect(OTPService.hash).toBeCalledTimes(1);
+    });
+    it('Should throw error if an error happen while verifying the email', async () => {
+      db.verification.findUnique.mockReturnValue({ email: 'email@gmail.com' });
+      db.user.update.mockReturnValue(null);
+      await expect(AuthService.verifyEmail('123456')).rejects.toThrow(
+        "Error happen while verifying  user's email ,please try again",
+      );
+      expect(OTPService.hash).toBeCalled();
+    });
+
+    //happy-scenario
+    it('Should verify the user\'s Email',async()=>{
+      db.verification.findUnique.mockReturnValue({ email: 'email@gmail.com' });
+      db.user.update.mockReturnValue({email:'email@gmail.com'});
+      await expect(AuthService.verifyEmail('12345')).resolves.not.toThrow();
+      expect(OTPService.hash).toBeCalled();
+      expect(db.verification.delete).toHaveBeenCalled();
+    })
   });
 });
