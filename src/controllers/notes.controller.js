@@ -56,9 +56,21 @@ const updateNote = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+const deleteNote=catchAsync(async (req,res,next)=>{
+  const {noteId}=req.params;
+  const {userId}=req.user;
+
+  await notesService.deleteNote(noteId,userId);
+  return res.status(200).json({
+    status:'success',
+    message:'Note deleted successfully'
+  })
+})
 module.exports = {
   createNote,
   getNotes,
   getNote,
   updateNote,
+  deleteNote
 };

@@ -10,5 +10,6 @@ notesRouter
 notesRouter
   .route('/:noteId')
   .get(protect, notesController.getNote)
-  .patch(protect, notesController.updateNote);
+  .patch(protect, notesController.updateNote)
+  .delete(protect, notesController.deleteNote);
 module.exports = notesRouter;
