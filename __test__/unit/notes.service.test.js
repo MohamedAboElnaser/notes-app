@@ -7,14 +7,16 @@ jest.mock('../../config', () => ({
   db: {
     note: {
       create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
     },
   },
 }));
 
 describe('Test notes.service module UNIT-Test', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-      });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   describe('createNote method', () => {
     it('Should throw error if any field is missed', async () => {
       await expect(noteService.createNote()).rejects.toThrow(AppError);
@@ -31,6 +33,13 @@ describe('Test notes.service module UNIT-Test', () => {
       await expect(
         noteService.createNote('12', 'note body', 'title'),
       ).resolves.not.toThrow();
+    });
+  });
+
+  describe('getAllNotes method', () => {
+    it("Should return user's notes", async () => {
+      await expect(noteService.getAllNotes('2')).resolves.not.toThrow();
+      expect(db.note.findMany).toBeCalled();
     });
   });
 });
