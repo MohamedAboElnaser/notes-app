@@ -42,4 +42,18 @@ describe('Test notes.service module UNIT-Test', () => {
       expect(db.note.findMany).toBeCalled();
     });
   });
+
+  describe('getNote method', () => {
+    it('Should throw appError if the not is not found', async () => {
+      db.note.findUnique.mockReturnValue(null);
+      await expect(noteService.getNote('1', '22')).rejects.toThrow('Not Found');
+    });
+
+    //happy Scenario
+    it('Should return the note', async () => {
+      db.note.findUnique.mockReturnValue({ body: 'note' });
+      await expect(noteService.getNote('1', '1')).resolves.not.toThrow();
+      expect(db.note.findUnique).toBeCalled();
+    });
+  });
 });
