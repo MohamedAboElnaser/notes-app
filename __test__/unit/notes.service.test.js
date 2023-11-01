@@ -10,6 +10,7 @@ jest.mock('../../config', () => ({
       findMany: jest.fn(),
       findUnique: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
     },
   },
 }));
@@ -87,6 +88,36 @@ describe('Test notes.service module UNIT-Test', () => {
       await expect(
         noteService.updateNote('1', '1', '1'),
       ).resolves.not.toThrow();
+    });
+  });
+
+  describe('deleteNote method', () => {
+    it('Should throw error if the note is not found', async () => {
+      db.note.findUnique.mockReturnValue(null);
+      await expect(noteService.deleteNote('12', '12')).rejects.toThrow(
+        'Note not Found',
+      );
+    });
+
+    it('Should throw error  if the user have no access to the note', async () => {
+      db.note.findUnique.mockReturnValue({ authId: '1' });
+      await expect(noteService.deleteNote('2', '111')).rejects.toThrow(
+        'You have no permission to do this action',
+      );
+    });
+
+    it('Should throw an error if an internal error happen while updating the note', async () => {
+      db.note.findUnique.mockReturnValue({ authorId: '1' });
+      db.note.update.mockReturnValue(null);
+      await expect(noteService.deleteNote('1', '1')).rejects.toThrow(
+        'Error happen while deleting the note, please try again.',
+      );
+    });
+    //happy scenario
+    it('Should delete the note', async () => {
+      db.note.findUnique.mockReturnValue({ authorId: '1' });
+      db.note.delete.mockResolvedValue({ note: 'deleted' });
+      await expect(noteService.deleteNote('1', '1')).resolves.not.toThrow();
     });
   });
 });
