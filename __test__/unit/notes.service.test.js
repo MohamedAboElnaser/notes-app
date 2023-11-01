@@ -9,6 +9,7 @@ jest.mock('../../config', () => ({
       create: jest.fn(),
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
   },
 }));
@@ -54,6 +55,38 @@ describe('Test notes.service module UNIT-Test', () => {
       db.note.findUnique.mockReturnValue({ body: 'note' });
       await expect(noteService.getNote('1', '1')).resolves.not.toThrow();
       expect(db.note.findUnique).toBeCalled();
+    });
+  });
+
+  describe('updateNote method', () => {
+    it('Should throw error if the note is not found', async () => {
+      db.note.findUnique.mockReturnValue(null);
+      await expect(noteService.updateNote('12', '12', '12')).rejects.toThrow(
+        'Note not Found',
+      );
+    });
+
+    it('Should throw error  if the user have no access to the note', async () => {
+      db.note.findUnique.mockReturnValue({ authId: '1' });
+      await expect(noteService.updateNote('1', '2', '111')).rejects.toThrow(
+        'You have no permission to do this action.',
+      );
+    });
+
+    it('Should throw an error if an internal error happen while updating the note', async () => {
+      db.note.findUnique.mockReturnValue({ authorId: '1' });
+      db.note.update.mockReturnValue(null);
+      await expect(noteService.updateNote('1', '1', '1')).rejects.toThrow(
+        'Error happen while updating note, please try again',
+      );
+    });
+    //happy scenario
+    it('Should update the note', async () => {
+      db.note.findUnique.mockReturnValue({ authorId: '1' });
+      db.note.update.mockResolvedValue({ note: 'updated' });
+      await expect(
+        noteService.updateNote('1', '1', '1'),
+      ).resolves.not.toThrow();
     });
   });
 });
