@@ -71,7 +71,11 @@ const updateNote = async (noteId, authorId, data) => {
       where: {
         id: noteId,
       },
-      data,
+      data: {
+        title: data.title,
+        body: data.body,
+        updatedAt: new Date(),
+      },
     });
     if (!updatedNote)
       throw new AppError(
