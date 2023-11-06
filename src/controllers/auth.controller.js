@@ -37,8 +37,20 @@ const login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+const reverifyEmail = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+  const otp = await authService.reverifyEmail(email);
+
+  return res.status(200).json({
+    status: 'success',
+    message: `Verification OTP sent to ${email}`,
+    otp: process.env.NODE_ENV !== 'production' ? otp : null,
+  });
+});
 module.exports = {
   signup,
   verifyEmail,
   login,
+  reverifyEmail,
 };

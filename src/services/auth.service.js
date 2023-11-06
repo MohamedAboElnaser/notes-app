@@ -65,9 +65,6 @@ const signUp = async (name, email, password) => {
 
     //send otp to user via email
     //TODO i will use events to send email by implement this in subscribers directory
-    // now i just log the otp to verify the account
-    console.log('The generated otp is: ', otp);
-    // for testing purposes
     return otp;
   } catch (err) {
     //Rollback
@@ -150,12 +147,12 @@ const login = async (email, password) => {
    * generate jwt with id [uuid] as the payload
    * return return jwt
    */
-  
+
   if (!email || !password)
-  throw new AppError(
-    `Missing fields : ${password ? 'email' : 'password'}`,
-    400,
-  );
+    throw new AppError(
+      `Missing fields : ${password ? 'email' : 'password'}`,
+      400,
+    );
   try {
     const user = await db.user.findFirst({
       where: {
@@ -184,8 +181,48 @@ const login = async (email, password) => {
   }
 };
 
+const reverifyEmail = async (email) => {
+  if (!email) throw new AppError('Missing require field', 500);
+  //fetch user record using email
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+  });
+  if (!user) throw new AppError('This email is not registered:(', 404);
+  if (user.isActive) throw new AppError('This email is already verified', 400);
+
+  //remove any verification records related to this user
+  await db.verification.deleteMany({
+    where: {
+      userId: user.userId,
+    },
+  });
+  //generate new otp of 6 digits
+  const otp = OTPService.generate(6);
+  hashedOtp = OTPService.hash(otp);
+
+  //create verification record at the db
+  const verificationRecord = await db.verification.create({
+    data: {
+      otp: hashedOtp,
+      userId: user.userId,
+    },
+  });
+
+  if (!verificationRecord)
+    throw new AppError(
+      'Error happen while creating otp record, please try again',
+      500,
+    );
+
+  //resend otp to user via email
+  //TODO i will use events to send email by implement this in subscribers directory
+  return otp;
+};
 module.exports = {
   signUp,
   verifyEmail,
   login,
+  reverifyEmail
 };

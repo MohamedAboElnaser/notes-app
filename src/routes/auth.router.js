@@ -10,4 +10,6 @@ authRouter.route('/verify-email').post(authController.verifyEmail);
 
 authRouter.route('/login').post(authController.login);
 
+authRouter.route('/reverify-email').post(authController.reverifyEmail)
+
 module.exports = authRouter;
