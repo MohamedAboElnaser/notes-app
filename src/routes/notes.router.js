@@ -1,9 +1,9 @@
 const notesRouter = require('express').Router();
 const notesController = require('../controllers/notes.controller');
-const protect = require('../middlewares/protectMIddleware');
+const {protectMiddleWare,validationMiddleWare} = require('../middlewares');
 
-notesRouter.use(protect);
-
+notesRouter.use(protectMiddleWare);
+notesRouter.use(validationMiddleWare)
 notesRouter
   .route('/')
   .post(notesController.createNote)

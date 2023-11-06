@@ -36,6 +36,8 @@ async function validate(schema, req) {
 }
 const ValidateMiddleware = async (req, res, next) => {
   const endPoint = req.path.split('/').pop();
+  console.log(req.path);
+
   if (availableSchemas.includes(endPoint)) {
     console.log('endPoint==>', endPoint);
     const { error, _ } = await validate(AllSchemas[endPoint], req);
@@ -43,16 +45,16 @@ const ValidateMiddleware = async (req, res, next) => {
       const errorMessage = error.message.replace(/"/g, '').replace('.', ' and');
       return next(new AppError(errorMessage, 400));
     } else next();
-  } else if (endPoint == 'notes') {
+  } else if (req.path == '/') {
     if (req.method == 'POST') {
-      const { error, _ } = await validate(AllSchemas.createNote);
+      const { error, _ } = await validate(AllSchemas.createNote, req);
 
       if (error) {
         const errorMessage = error.message
           .replace(/"/g, '')
           .replace('.', ' and');
         return next(new AppError(errorMessage, 400));
-      }
+      } else next();
     } else next();
   } else next();
 };
