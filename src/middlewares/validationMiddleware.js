@@ -12,6 +12,11 @@ const signupSchema = joi.object({
 const verifyEmailSchema = joi.object({
   otp: joi.string().max(6).min(6).required(),
 });
+
+//reverify-emailSchema
+const reverifyEmailSchema = joi.object({
+  email: joi.string().email().required(),
+});
 // login-schema
 const loginSchema = joi.object({
   email: joi.string().email().required(),
@@ -28,8 +33,9 @@ const AllSchemas = {
   'verify-email': verifyEmailSchema,
   login: loginSchema,
   createNote: createNoteSchema,
+  'reverify-email': reverifyEmailSchema,
 };
-const availableSchemas = ['signup', 'login', 'verify-email'];
+const availableSchemas = ['signup', 'login', 'verify-email', 'reverify-email'];
 
 async function validate(schema, req) {
   return await schema.validate(req.body, { abortEarly: false });
