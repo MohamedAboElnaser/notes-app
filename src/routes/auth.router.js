@@ -1,8 +1,10 @@
-const express = require("express");
-const authController = require("./../controllers/auth.controller");
+const express = require('express');
+const authController = require('./../controllers/auth.controller');
+const { validationMiddleWare } = require('../middlewares');
 
 const authRouter = express.Router();
-authRouter.route("/signup").post(authController.signup);
+authRouter.use(validationMiddleWare);
+authRouter.route('/signup').post(authController.signup);
 
 authRouter.route('/verify-email').post(authController.verifyEmail);
 
