@@ -17,6 +17,7 @@ jest.mock('../../config', () => ({
       create: jest.fn(),
       delete: jest.fn(),
       findUnique: jest.fn(),
+      deleteMany: jest.fn(),
     },
   },
 }));
@@ -159,6 +160,45 @@ describe('Test auth.service module  Unit-Testing', () => {
       await expect(AuthService.verifyEmail('12345')).resolves.not.toThrow();
       expect(OTPService.hash).toBeCalled();
       expect(db.verification.delete).toHaveBeenCalled();
+    });
+  });
+
+  describe('Test reverifyEmail', () => {
+    it('Should throw AppError if email field is missing', async () => {
+      await expect(AuthService.reverifyEmail()).rejects.toThrow(AppError);
+    });
+
+    it('Should throw error if the email is not registered', async () => {
+      db.user.findUnique.mockReturnValue(null);
+      await expect(AuthService.reverifyEmail('user@gmail.com')).rejects.toThrow(
+        'This email is not registered:(',
+      );
+    });
+
+    it('Should throw error if the email is already verified', async () => {
+      db.user.findUnique.mockReturnValue({ isActive: true });
+      await expect(AuthService.reverifyEmail('user@gmail.com')).rejects.toThrow(
+        'This email is already verified',
+      );
+    });
+
+    it('Should throw AppError if any error happen while creating otp record at verification table', async () => {
+      db.user.findUnique.mockResolvedValue({ isActive: false });
+      db.verification.create.mockReturnValue(null);
+      await expect(AuthService.reverifyEmail('user@gmail.com')).rejects.toThrow(
+        'Error happen while creating otp record, please try again',
+      );
+    });
+
+    //happy-scenario
+    it('Should return otp', async () => {
+      db.user.findUnique.mockResolvedValue({ isActive: false });
+      db.verification.create.mockReturnValue({ otp: 'pla....' });
+      await expect(
+        AuthService.reverifyEmail('user@gmail.com'),
+      ).resolves.not.toThrow();
+      expect(OTPService.generate).toBeCalled();
+      expect(OTPService.hash).toBeCalled();
     });
   });
 });
