@@ -104,4 +104,40 @@ describe('Test notes-apis', () => {
         .expect(200);
     });
   });
+
+  describe('Test PATCH /notes:id', () => {
+    it('Should response with 200 status code ', async () => {
+      //first create the note
+      const res = await req(server)
+        .post(URL)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ body: 'note-body', title: 'note-title' });
+      //get the id
+      const { id } = res.body.data.note;
+      await req(server)
+        .patch(`${URL}/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'updated title',
+          body: 'Updated body',
+        })
+        .expect(200);
+    });
+  });
+
+  describe('Test DELETE /notes:id', () => {
+    it('Should response with 200 status code ', async () => {
+      //first create the note
+      const res = await req(server)
+        .post(URL)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ body: 'note-body', title: 'note-title' });
+      //get the id
+      const { id } = res.body.data.note;
+      await req(server)
+        .delete(`${URL}/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    });
+  });
 });
