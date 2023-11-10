@@ -31,8 +31,9 @@ beforeEach(async () => {
   token = res.body.token;
 }, 10000);
 describe('Test notes-apis', () => {
+  const URL = '/api/v1/notes';
+
   describe('Test POST /notes', () => {
-    const URL = '/api/v1/notes';
     it('Should response with 401 for unauthorized user', async () => {
       const res = await req(server).post(URL);
       expect(res.status).toBe(401);
@@ -66,7 +67,6 @@ describe('Test notes-apis', () => {
   });
 
   describe('Test GET /notes', () => {
-    const URL = '/api/v1/notes';
     it('Should response with 401 for unauthorized user', async () => {
       const res = await req(server).get(URL);
       expect(res.status).toBe(401);
@@ -80,5 +80,28 @@ describe('Test notes-apis', () => {
       expect(res.body.message).toContain('returned successfully');
     });
   });
-  
+
+  describe('Test GET /notes:id', () => {
+    it('Should return 404 status code if the not does not exist ', async () => {
+      const res = await req(server)
+        .get(`${URL}/lasdIowe89asdIasdf`)
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(404);
+      expect(res.body.message).toContain('Not Found');
+    });
+    //happy-scenario
+    it('Should return 200 status code', async () => {
+      //first create the note
+      const res = await req(server)
+        .post(URL)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ body: 'note-body', title: 'note-title' });
+      //get the id
+      const { id } = res.body.data.note;
+      await req(server)
+        .get(`${URL}/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    });
+  });
 });
