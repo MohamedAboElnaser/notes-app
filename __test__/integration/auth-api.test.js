@@ -81,5 +81,40 @@ describe('Test auth-apis', () => {
     });
   });
 
-  
+  describe('Test /verify-email', () => {
+    const URL = '/api/v1/auth/verify-email';
+    it('Should return 400 status code if the otp formate is invalid', async () => {
+      const res = await req(server).post(URL).send({
+        otp: '12334',
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.message).toContain('at least 6');
+    });
+
+    it('Should return 404 status code if the otp is not attached to any email', async () => {
+      const res = await req(server).post(URL).send({
+        otp: '123345',
+      });
+      expect(res.status).toBe(404);
+      expect(res.body.message).toContain('Invalid OTP');
+    });
+    //happy-scenario
+    it('Should return 200 status code', async () => {
+      //register new user
+      const signUpResponse = await req(server)
+        .post('/api/v1/auth/signup')
+        .send({
+          name: 'user',
+          email: 'user@gmail.com',
+          password: '12112121212',
+        });
+      //fetch otp from response body
+      const {otp} = signUpResponse.body;
+      const res = await req(server).post(URL).send({
+        otp:`${otp}`,
+      });
+      expect(res.status).toBe(200);
+      expect(res.body.message).toContain('verified successfully');
+    });
+  });
 });
