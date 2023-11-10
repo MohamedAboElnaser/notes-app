@@ -64,4 +64,21 @@ describe('Test notes-apis', () => {
         .expect(201);
     });
   });
+
+  describe('Test GET /notes', () => {
+    const URL = '/api/v1/notes';
+    it('Should response with 401 for unauthorized user', async () => {
+      const res = await req(server).get(URL);
+      expect(res.status).toBe(401);
+    });
+    //happy scenario
+    it('Should response with 200 ', async () => {
+      const res = await req(server)
+        .get(URL)
+        .set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(200);
+      expect(res.body.message).toContain('returned successfully');
+    });
+  });
+  
 });
