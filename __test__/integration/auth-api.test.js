@@ -109,12 +109,99 @@ describe('Test auth-apis', () => {
           password: '12112121212',
         });
       //fetch otp from response body
-      const {otp} = signUpResponse.body;
-      const res = await req(server).post(URL).send({
-        otp:`${otp}`,
-      });
+      const { otp } = signUpResponse.body;
+      const res = await req(server)
+        .post(URL)
+        .send({
+          otp: `${otp}`,
+        });
       expect(res.status).toBe(200);
       expect(res.body.message).toContain('verified successfully');
     });
+  });
+
+  describe('Test /login', () => {
+    const URL = '/api/v1/auth/login';
+    it('Should response with 400 status code if the data format is invalid', async () => {
+      const res = await req(server).post(URL).send({
+        email: 'email@domain',
+        password: '1111',
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.message).toContain('password length');
+    });
+
+    it('Should response with 404 status code if the the email is not registered', async () => {
+      //register new user
+      const signUpResponse = await req(server)
+        .post('/api/v1/auth/signup')
+        .send({
+          name: 'user',
+          email: 'user@gmail.com',
+          password: 'password',
+        });
+      //fetch otp from response body
+      const { otp } = signUpResponse.body;
+      const verifyResponse = await req(server)
+        .post('/api/v1/auth/verify-email')
+        .send({
+          otp: `${otp}`,
+        });
+      const res=await req(server).post(URL).send({
+        email:'user111@gmail.com',
+        password:'1234tyu2345',
+      });
+      expect(res.status).toBe(404);
+      expect(res.body.message).toContain('not attached')
+    });
+
+    it('Should response with 401 status if the password is invalid',async()=>{
+       //register new user
+       const signUpResponse = await req(server)
+       .post('/api/v1/auth/signup')
+       .send({
+         name: 'user',
+         email: 'user@gmail.com',
+         password: 'password',
+       });
+     //fetch otp from response body
+     const { otp } = signUpResponse.body;
+     const verifyResponse = await req(server)
+       .post('/api/v1/auth/verify-email')
+       .send({
+         otp: `${otp}`,
+       });
+     const res=await req(server).post(URL).send({
+       email:'user@gmail.com',
+       password:'NotValidPassword',
+     });
+     expect(res.status).toBe(401);
+     expect(res.body.message).toContain('Invalid Password')
+    });
+
+    //happy-scenario
+    it('Should response with 200 status code',async()=>{
+       //register new user
+       const signUpResponse = await req(server)
+       .post('/api/v1/auth/signup')
+       .send({
+         name: 'user',
+         email: 'user@gmail.com',
+         password: 'password',
+       });
+     //fetch otp from response body
+     const { otp } = signUpResponse.body;
+     const verifyResponse = await req(server)
+       .post('/api/v1/auth/verify-email')
+       .send({
+         otp: `${otp}`,
+       });
+     const res=await req(server).post(URL).send({
+       email:'user@gmail.com',
+       password:'password',
+     });
+     expect(res.status).toBe(200);
+     expect(Object.keys(res.body)).toContain('token');
+    })
   });
 });
