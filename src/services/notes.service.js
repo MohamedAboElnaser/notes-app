@@ -1,5 +1,18 @@
 const { db } = require('../../config');
 const { AppError } = require('../util');
+/**
+ * Creates a new note and associates it with the specified author.
+ *
+ * @param {string} authorId - The unique identifier of the author.
+ * @param {string} noteBody - The content/body of the note.
+ * @param {string} noteTitle - The title of the note.
+ * @throws {AppError} Throws an error if any of the required fields are missing.
+ * @throws {AppError} Throws an error if an issue occurs while creating the note.
+ * @returns {Promise<object>} Returns a Promise that resolves to the created note object.
+ * @async
+ * @function
+ * @name createNote
+ */
 
 const createNote = async (authorId, noteBody, noteTitle) => {
   if (!authorId || !noteBody || !noteTitle)
@@ -18,7 +31,16 @@ const createNote = async (authorId, noteBody, noteTitle) => {
 
   return newNote;
 };
-
+/**
+ * Retrieves all notes associated with a specific author.
+ *
+ * @param {string} authorId - The unique identifier of the author.
+ * @throws {AppError} Throws an error if the authorId is missing.
+ * @returns {Promise<Array<object>>} Returns a Promise that resolves to an array of note objects.
+ * @async
+ * @function
+ * @name getAllNotes
+ */
 const getAllNotes = async (authorId) => {
   const notes = await db.note.findMany({
     where: {
@@ -37,6 +59,18 @@ const getAllNotes = async (authorId) => {
   return notes;
 };
 
+/**
+ * Retrieves a specific note based on its ID and author.
+ *
+ * @param {string} id - The unique identifier of the note.
+ * @param {string} authorId - The unique identifier of the author associated with the note.
+ * @throws {AppError} Throws an error if the note is not found.
+ * @returns {Promise<object>} Returns a Promise that resolves to the found note object.
+ * @async
+ * @function
+ * @name getNote
+ */
+
 const getNote = async (id, authorId) => {
   const note = await db.note.findUnique({
     where: {
@@ -48,6 +82,20 @@ const getNote = async (id, authorId) => {
   return note;
 };
 
+/**
+ * Updates a specific note based on its ID and author, with the provided data.
+ *
+ * @param {string} noteId - The unique identifier of the note to be updated.
+ * @param {string} authorId - The unique identifier of the author associated with the note.
+ * @param {object} data - The data to update the note with, including title and body.
+ * @throws {AppError} Throws an error if the note is not found.
+ * @throws {AppError} Throws an error if the current user doesn't have permission to update the note.
+ * @throws {AppError} Throws an error if an issue occurs while updating the note.
+ * @returns {Promise<object>} Returns a Promise that resolves to the updated note object.
+ * @async
+ * @function
+ * @name updateNote
+ */
 const updateNote = async (noteId, authorId, data) => {
   try {
     //fetch the note record using noteId
@@ -87,6 +135,18 @@ const updateNote = async (noteId, authorId, data) => {
   }
 };
 
+/**
+ * Deletes a specific note based on its ID and author.
+ *
+ * @param {string} noteId - The unique identifier of the note to be deleted.
+ * @param {string} authorId - The unique identifier of the author associated with the note.
+ * @throws {AppError} Throws an error if the note is not found.
+ * @throws {AppError} Throws an error if the current user doesn't have permission to delete the note.
+ * @throws {AppError} Throws an error if an issue occurs while deleting the note.
+ * @async
+ * @function
+ * @name deleteNote
+ */
 const deleteNote = async (noteId, authorId) => {
   try {
     //fetch note by noteId [uuid]
