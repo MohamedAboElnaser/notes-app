@@ -44,7 +44,6 @@ const getNote = async (id, authorId) => {
       authorId,
     },
   });
-  console.log(note);
   if (!note) throw new AppError('Not Found.', 404);
   return note;
 };
