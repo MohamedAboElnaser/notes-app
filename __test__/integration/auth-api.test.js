@@ -7,11 +7,11 @@ beforeAll(async () => {
   await db.$connect();
   await db.user.deleteMany({});
   await db.note.deleteMany({});
-});
+},10000);
 afterEach(async () => {
   await db.user.deleteMany({});
   await db.note.deleteMany({});
-});
+},10000);
 afterAll(async () => {
   await server.close();
 }, 10000);
