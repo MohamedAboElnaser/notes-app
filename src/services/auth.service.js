@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { AppError, OTPService, JWTService } = require('../util');
+const { AppError, OTPService, JWTService, Email } = require('../util');
 const { db } = require('../../config');
 
 const signUp = async (name, email, password) => {
@@ -64,7 +64,11 @@ const signUp = async (name, email, password) => {
       );
 
     //send otp to user via email
-    //TODO i will use events to send email by implement this in subscribers directory
+    await new Email(
+      email,
+      'Verify email address',
+      `Thanks for register to our app your otp code is : ${otp}`,
+    ).send();
     return otp;
   } catch (err) {
     //Rollback
@@ -217,12 +221,16 @@ const reverifyEmail = async (email) => {
     );
 
   //resend otp to user via email
-  //TODO i will use events to send email by implement this in subscribers directory
+  await new Email(
+    email,
+    'Resend otp verification code',
+    `Your otp code is : ${otp}`,
+  ).send();
   return otp;
 };
 module.exports = {
   signUp,
   verifyEmail,
   login,
-  reverifyEmail
+  reverifyEmail,
 };
