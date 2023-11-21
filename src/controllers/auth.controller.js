@@ -14,8 +14,6 @@ const authService = require('../services/auth.service');
 const signup = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
   const otp = await authService.signUp(name, email, password);
-  // TODO Remove the console.log statement after implement sending emails feature
-  console.log(`OTP is ==>${otp}`);
   return res.status(201).json({
     status: 'success',
     message: `Check the confirmation otp code at ${email}`,
@@ -85,7 +83,7 @@ const reverifyEmail = catchAsync(async (req, res, next) => {
   return res.status(200).json({
     status: 'success',
     message: `Verification OTP sent to ${email}`,
-    otp: process.env.NODE_ENV !== 'production' ? otp : null,
+    otp: process.env.NODE_ENV !== 'production' ? otp : undefined,
   });
 });
 module.exports = {
