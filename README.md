@@ -12,6 +12,7 @@ The Notes App API allows users to perform CRUD (Create, Read, Update, Delete) op
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Architecture](#architecture)
+  - [UML for DB](#uml-for-db)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
@@ -30,6 +31,8 @@ The Notes App API allows users to perform CRUD (Create, Read, Update, Delete) op
 
 ![app-architecture](docs/appArch.svg)
 
+## UML for DB
+![uml](docs/Database_UML.jpg)
 ## Getting Started
 
 ### Prerequisites
