@@ -1,7 +1,7 @@
 let { db } = require('../../config');
 const AuthService = require('../../src/services/auth.service');
 const bcrypt = require('bcrypt');
-const { AppError, OTPService, JWTService } = require('../../src/util');
+const { AppError, OTPService, JWTService,Email } = require('../../src/util');
 
 //mock DB exposed from config.
 jest.mock('../../config', () => ({
@@ -38,6 +38,8 @@ jest.mock('../../src/util/otp-service', () => ({
   hash: jest.fn().mockReturnValue('password'),
 }));
 
+//mock Email service
+jest.mock('../../src/util/email-service');
 describe('Test auth.service module  Unit-Testing', () => {
   afterEach(() => {
     jest.clearAllMocks();

@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 
 if (process.env.NODE_ENV == 'testing') {
   Object.assign(process.env, {
@@ -12,6 +12,12 @@ if (process.env.NODE_ENV == 'testing') {
   console.log('Connected to production DB..');
 } else console.log('connected to development db');
 const { PrismaClient } = require('@prisma/client');
-const db = new PrismaClient();
+const db = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 module.exports = db;

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const AppError = require('./AppError');
 /**
  * @class JWTService
  * @classdesc A service for generating and decoding JWT (JSON Web Token) tokens.
@@ -12,7 +13,7 @@ class JWTService {
   static async generate(id) {
     const jwtToken = jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn:
-        (Date.now() + Number(process.env.JWT_EXPIRE_IN) * 24 * 60 * 60 * 1000),
+        Date.now() + Number(process.env.JWT_EXPIRE_IN) * 24 * 60 * 60 * 1000,
     });
 
     return jwtToken;
@@ -28,7 +29,7 @@ class JWTService {
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
       return decodedToken;
     } catch (err) {
-      throw err;
+      throw new AppError('Invalid token!', 400);
     }
   }
 }

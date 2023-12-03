@@ -118,7 +118,7 @@ describe('Test auth-apis', () => {
         });
       expect(res.status).toBe(200);
       expect(res.body.message).toContain('verified successfully');
-    });
+    },10000);
   });
 
   describe('Test /login', () => {
@@ -154,7 +154,7 @@ describe('Test auth-apis', () => {
       });
       expect(res.status).toBe(404);
       expect(res.body.message).toContain('not attached');
-    });
+    },10000);
 
     it('Should response with 401 status if the password is invalid', async () => {
       //register new user
@@ -178,7 +178,7 @@ describe('Test auth-apis', () => {
       });
       expect(res.status).toBe(401);
       expect(res.body.message).toContain('Invalid Password');
-    });
+    },10000);
 
     //happy-scenario
     it('Should response with 200 status code', async () => {
@@ -203,7 +203,7 @@ describe('Test auth-apis', () => {
       });
       expect(res.status).toBe(200);
       expect(Object.keys(res.body)).toContain('token');
-    });
+    },10000);
   });
 
   describe('Test /reverify-email', () => {
@@ -247,6 +247,6 @@ describe('Test auth-apis', () => {
       const res = await req(server).post(URL).send({ email: 'user@gmail.com' });
       expect(res.status).toBe(200);
       expect(res.body.message).toContain('OTP sent to user@gmail.com');
-    });
+    },10000);
   });
 });

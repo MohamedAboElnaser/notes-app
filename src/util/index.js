@@ -1,6 +1,7 @@
 module.exports = {
-    AppError: require("./AppError"),
-    catchAsync: require("./catch-async"),
-    OTPService: require("./otp-service"),
-    JWTService: require('./jwt-service'),
+  AppError: require('./AppError'),
+  catchAsync: require('./catch-async'),
+  OTPService: require('./otp-service'),
+  JWTService: require('./jwt-service'),
+  Email: require('./email-service'),
 };
