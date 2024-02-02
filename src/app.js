@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-cors = require('cors');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { AppError } = require('./util');
 const globalErrorHandler = require('./middlewares/globalErrorHandler');
