@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { AppError } = require('./util');
 const globalErrorHandler = require('./middlewares/globalErrorHandler');
@@ -12,7 +13,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
-
+app.use(cors());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/notes', notesRouter);
 
