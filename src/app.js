@@ -14,6 +14,11 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Server is up and running!',
+  });
+});
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/notes', notesRouter);
 
