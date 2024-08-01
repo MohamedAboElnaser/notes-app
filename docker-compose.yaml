@@ -1,0 +1,27 @@
+services:
+# Backend service for notes-app
+  notes-app:
+    build: .
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+
+  # Database service for notes-app
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=notes-app
+    ports:
+      - "5433:5432"  # Expose the database on port 5433 on the host not to conflict with a local database
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
