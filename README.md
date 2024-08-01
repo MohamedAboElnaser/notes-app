@@ -32,28 +32,33 @@ The Notes App API allows users to perform CRUD (Create, Read, Update, Delete) op
 ![app-architecture](docs/appArch.svg)
 
 ## UML for DB
+
 ![uml](docs/Database_UML.jpg)
+
 ## Getting Started
 
 ### Prerequisites
 
 Before you begin, ensure you have the following:
 
- - Docker installed on your machine
+- Docker installed on your machine
 
 ### Installation
 
-1. Clone the repository: `git clone https://github.com/MohamedAboElnaser/notes-app.git`
-2. Configure environment variables: Create a `.env` file .
-   - Copy [.env.example](.env.example) content to `.env` file
+1.  Clone the repository: `git clone https://github.com/MohamedAboElnaser/notes-app.git`
+2.  Configure environment variables: Create a `.env` file .
+    - Copy [.env.example](.env.example) content to `.env` file
     - Set DATABASE_URL to
-      ```bash
-        DATABASE_URL=postgresql://postgres:postgres@db:5432/notes-app
-      ```
-3 . Run the following command to start the project
-    ```bash
-    docker-compose up
-    ```
+      `  
+          DATABASE_URL=postgresql://postgres:postgres@db:5432/notes-app
+        `
+      3 . Run the following command to start the project
+
+
+        ```bash
+        docker-compose up
+        ```
+
 ## Endpoints
 
 You can see postman documentation from [here](https://documenter.getpostman.com/view/30739769/2s9YeBeZR2)
