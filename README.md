@@ -51,13 +51,11 @@ Before you begin, ensure you have the following:
     - Set DATABASE_URL to
       `  
           DATABASE_URL=postgresql://postgres:postgres@db:5432/notes-app
-        `
-      3 . Run the following command to start the project
-
-
-        ```bash
+        `       
+3. Run the following command to start the project
+   ```bash
         docker-compose up
-        ```
+    ```
 
 ## Endpoints
 
