@@ -45,7 +45,7 @@ Before you begin, ensure you have the following:
 
 ### Installation
 
-1.  Clone the repository: `git clone https://github.com/MohamedAboElnaser/notes-app.git`
+1.  Clone the repository: `git clone -b docker-branch https://github.com/MohamedAboElnaser/notes-app.git`
 2.  Configure environment variables: Create a `.env` file .
     - Copy [.env.example](.env.example) content to `.env` file
     - Set DATABASE_URL to
